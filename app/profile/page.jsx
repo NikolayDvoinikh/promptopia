@@ -9,7 +9,7 @@ const MyProfile = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [posts, setPosts] = useState([]);
-
+  console.log(session);
   useEffect(() => {
     const fetchPosts = async () => {
       const resp = await fetch(`/api/users/${session?.user.id}/posts`);
@@ -41,13 +41,19 @@ const MyProfile = () => {
   };
 
   return (
-    <Profile
-      name="My"
-      desc="Welcome to your Profile Page"
-      data={posts}
-      handleEdit={handleEdit}
-      handleDelete={handleDelete}
-    />
+    <>
+      {session ? (
+        <Profile
+          name="My"
+          desc="Welcome to your Profile Page"
+          data={posts}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
+      ) : (
+        <div>You are not authorized</div>
+      )}
+    </>
   );
 };
 
