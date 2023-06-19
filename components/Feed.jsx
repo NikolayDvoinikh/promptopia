@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [allPrompts, setAllPrompts] = useState([]);
+  const [searchResult, setSearchResult] = useState([]);
+  const [timerId, setTimerId] = useState(null);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -18,7 +20,33 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
-  const handleSearchChange = ({ target }) => {};
+  const searchNormalized = (text) => text.toLowerCase();
+
+  const handleTagClick = (tag) => {
+    setSearchText(tag);
+    const filteredPrompts = allPrompts.filter((post) => post.tag === tag);
+    setSearchResult(filteredPrompts);
+  };
+
+  const handleSearchChange = ({ target }) => {
+    clearTimeout(timerId);
+
+    setSearchText(target.value);
+    setTimerId(
+      setTimeout(() => {
+        const filteredSearch = allPrompts.filter(({ prompt, tag, creator }) => {
+          const value = searchNormalized(target.value).trim();
+          return (
+            searchNormalized(prompt).includes(value) ||
+            searchNormalized(tag).includes(value) ||
+            searchNormalized(creator.username).includes(value)
+          );
+        });
+        setSearchResult(filteredSearch);
+      }, 500)
+    );
+  };
+
   return (
     <section className="feed">
       <form className="relative w-full flex-center">
@@ -31,7 +59,11 @@ const Feed = () => {
           className="search_input peer"
         />
       </form>
-      <PromptCardList data={allPrompts} handleTagClick={() => {}} />
+      {searchText ? (
+        <PromptCardList data={searchResult} handleTagClick={handleTagClick} />
+      ) : (
+        <PromptCardList data={allPrompts} handleTagClick={handleTagClick} />
+      )}
     </section>
   );
 };
