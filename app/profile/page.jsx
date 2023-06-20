@@ -9,7 +9,7 @@ const MyProfile = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [posts, setPosts] = useState([]);
-  console.log(session);
+
   useEffect(() => {
     const fetchPosts = async () => {
       const resp = await fetch(`/api/users/${session?.user.id}/posts`);

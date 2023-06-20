@@ -2,7 +2,7 @@ import { PromptCard } from "@components";
 
 const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
   return (
-    <section className="w-full">
+    <section className="w-full flex-center flex-col">
       <h2 className="head_text text-left">
         <span className="blue_gradient">{name} Profile</span>
       </h2>
