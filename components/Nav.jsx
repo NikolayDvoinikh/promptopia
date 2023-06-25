@@ -20,17 +20,7 @@ const Nav = () => {
   }, []);
 
   return (
-    <nav className="w-full flex-between mb-16 pt-3">
-      <Link href="/" className="flex gap-2 flex-center">
-        <Image
-          src="/assets/images/logo.svg"
-          alt="Promptopia Logo"
-          width={30}
-          height={30}
-          className="object-contain"
-        />
-        <p className="logo_text">Promptopia</p>
-      </Link>
+    <nav>
       {/* desktop navigation  */}
       <div className="sm:flex hidden">
         {session?.user ? (

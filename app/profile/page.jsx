@@ -4,17 +4,26 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Profile } from "@components";
+import Image from "next/image";
 
 const MyProfile = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [posts, setPosts] = useState([]);
-  console.log(session);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchPosts = async () => {
-      const resp = await fetch(`/api/users/${session?.user.id}/posts`);
-      const data = await resp.json();
-      setPosts(data);
+      try {
+        setLoading(true);
+        const resp = await fetch(`/api/users/${session?.user.id}/posts`);
+        const data = await resp.json();
+        setPosts(data);
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (session?.user.id) fetchPosts();
@@ -42,7 +51,19 @@ const MyProfile = () => {
 
   return (
     <>
-      {session ? (
+      {loading && (
+        <div className="w-full flex-center">
+          <Image
+            src="/assets/icons/loader.svg"
+            width={50}
+            height={50}
+            alt="loader"
+            className="object-contain"
+          />
+          <div>Loading...</div>
+        </div>
+      )}
+      {session && (
         <Profile
           name="My"
           desc="Welcome to your Profile Page"
@@ -50,8 +71,6 @@ const MyProfile = () => {
           handleEdit={handleEdit}
           handleDelete={handleDelete}
         />
-      ) : (
-        <div>You are not authorized</div>
       )}
     </>
   );
